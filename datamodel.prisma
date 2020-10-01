@@ -1,22 +1,22 @@
 type User {
-  id: ID!
-  username: String! 
-  email: String! 
-  firstName: String 
-  lastName: String  
-  bio: String  
+  id: ID! @id
+  username: String! @unique
+  email: String! @unique
+  firstName: String @default(value: "")
+  lastName: String @default(value: "")
+  bio: String @default(value: "")
   posts: [Post!]!
   likes: [Like!]!
   comments: [Comment!]!
-  followers: [User!]!
-  following: [User!]! 
+  followers: [User!]! @relation(name: "FollowRelation")
+  following: [User!]! @relation(name: "FollowRelation")
   rooms: [Room!]!
   loginSecret: String
 }
 
 
 type Post {
-  id: ID! 
+  id: ID! @id
   files: [File!]!
   user: User!
   location: String
@@ -26,13 +26,13 @@ type Post {
 }
 
 type Like {
-  id: ID! 
+  id: ID! @id
   user: User!
   post: Post!
 }
 
 type Comment {
-  id: ID! 
+  id: ID! @id
   text: String!
   user: User!
   post: Post!
@@ -41,21 +41,21 @@ type Comment {
 
 
 type File {
-  id: ID! 
+  id: ID! @id
   url: String!
   post: Post!
 }
 
 type Room {
-  id: ID! 
+  id: ID! @id
   participants: [User!]!
   messages: [Message!]!
 }
 
 type Message {
-  id: ID! 
+  id: ID! @id
   text: String! 
-  from: User! 
-  to: User! 
+  from: User! @relation(name: "From")
+  to: User! @relation(name: "To")
   room: Room!
 }
