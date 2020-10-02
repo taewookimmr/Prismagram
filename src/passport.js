@@ -1,19 +1,34 @@
-import passport from "passport"
-import JwtStrategy from "passport-jwt"
-const dotenv = require('dotenv');
-dotenv.config();
+import { prisma } from "../generated/prisma-client"
+import passport from "passport";
+import { Strategy, ExtractJwt } from "passport-jwt";
 
 const jwtOptions = {
-    jwtFromRequest = JwtStrategy.ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secret : process.env.JWT_SECRET,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.JWT_SECRET,
 };
 
-const verifyUser = (payload, done) => {
-    try {
-
-    } catch(error) {
-        
+const verifyUser = async (payload, done) => {
+  try {
+    const user = await prisma.user({ id: payload.id });
+    if (user !== null) {
+      return done(null, user);
+    } else {
+      console.log(`verifyuser failed`);
+      return done(null, false);
     }
-}
+  } catch (error) {
+    console.log(`verifyuser error ${error}`);
+    return done(error, false);
+  }
+};
 
-passport.use(new JwtStrategy(jwtOptions, verifyUser));
+export const authenticateJwt = (req, res, next) =>
+  passport.authenticate("jwt", { sessions: false }, (error, user) => {
+    if (user) {
+      req.user = user;
+    }
+    next();
+  })(req, res, next);
+
+passport.use(new Strategy(jwtOptions, verifyUser));
+passport.initialize();

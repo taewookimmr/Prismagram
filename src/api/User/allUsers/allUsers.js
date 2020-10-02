@@ -1,6 +1,5 @@
-import { prisma } from "../../../../generated/prisma-client";
 export default {
     Query: {
-        allUsers: async() => prisma.users()
+        allUsers: async(_, args , {prisma}) => prisma.users()
     }
 };
