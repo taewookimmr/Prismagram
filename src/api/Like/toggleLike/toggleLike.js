@@ -1,3 +1,4 @@
+import { prisma } from "../../../../generated/prisma-client";
 import { isAuthenticated } from "../../../middlewares";
 export default {
   Mutation: {
@@ -6,24 +7,17 @@ export default {
       const { postId } = args;
       const { user } = request;
       try {
-        const existingLike = await prisma.$exists.like({
-          AND: [
-            {
-              user: {
-                id: user.id,
-              },
-            },
-            {
-              post: {
-                id: postId,
-              },
-            },
-          ],
-        });
-  
+        const filterOptions = {
+          AND: [{ user: { id: user.id } }, { post: { id: postId } }],
+        };
+        const existingLike = await prisma.$exists.like(filterOptions);
+
         if (existingLike) {
-          // todo delete like
+          // delete like
+          console.log("when exisiting like");
+          await prisma.deleteManyLikes(filterOptions);
         } else {
+          console.log("when like doesn't exist");
           // make like
           const newLike = await prisma.createLike({
             user: {
@@ -38,13 +32,11 @@ export default {
             },
           });
         }
-  
         return true;
-      }
-      catch(error){
+      } catch (error) {
+        console.log(`here catch : ${error}`);
         return false;
       }
-    
     },
   },
 };
