@@ -8,10 +8,10 @@ Instagram clone with Express + Prisma + React and React Native
 - [x] Create LoginSecret
 - [x] Like / UnLike a photo
 - [x] Comment on a photo
-- [ ] Search by user
-- [ ] Search by location
+- [x] Search by user
+- [x] Search by location
+- [x] Follow / Unfollower user
 - [ ] See user profile
-- [ ] Follow / Unfollower user
 - [ ] See the full photo
 - [ ] Edit my profile
 - [ ] Log in
