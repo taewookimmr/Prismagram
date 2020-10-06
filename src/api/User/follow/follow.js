@@ -7,10 +7,10 @@ export default {
       const { id } = args;
       const { user } = request;
       try {
-         await prisma.updateUser({
+        await prisma.updateUser({
           where: { id: user.id },
           data: {
-            following: { connect: { id } }
+            following: { connect: { id } },
           },
         });
         return true;
